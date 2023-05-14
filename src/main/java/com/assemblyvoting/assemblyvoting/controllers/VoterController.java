@@ -79,4 +79,17 @@ public class VoterController {
 
         return ResponseEntity.status(HttpStatus.OK).body(voterService.save(voterModel));
     }
+
+    @DeleteMapping("/{cpf}")
+    public ResponseEntity<Object> deleteVoter(@PathVariable(value = "cpf") String cpf) {
+        Optional<VoterModel> voterModelOptional = voterService.findByVoterCPF(cpf);
+
+        if (!voterModelOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("CPF not found.");
+        }
+
+        voterService.delete(voterModelOptional.get());
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

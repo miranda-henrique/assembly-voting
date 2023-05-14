@@ -32,4 +32,9 @@ public class VoterService {
     public Optional<VoterModel> findByVoterCPF(String cpf) {
         return voterRepository.findByVoterCPF(cpf);
     }
+
+    @Transactional
+    public void delete(VoterModel voterModel) {
+        voterRepository.delete(voterModel);
+    }
 }
