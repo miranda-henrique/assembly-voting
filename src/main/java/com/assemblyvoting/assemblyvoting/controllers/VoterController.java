@@ -1,6 +1,7 @@
 package com.assemblyvoting.assemblyvoting.controllers;
 
 import com.assemblyvoting.assemblyvoting.dtos.VoterDTO;
+import com.assemblyvoting.assemblyvoting.dtos.VoterUpdateDTO;
 import com.assemblyvoting.assemblyvoting.models.VoterModel;
 import com.assemblyvoting.assemblyvoting.services.VoterService;
 import jakarta.validation.Valid;
@@ -56,5 +57,26 @@ public class VoterController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(voterModelOptional.get());
+    }
+
+    @PutMapping("/{cpf}")
+    public ResponseEntity<Object> updateVoter(
+            @PathVariable(value = "cpf") String cpf,
+            @RequestBody @Valid VoterUpdateDTO voterUpdateDTO
+    ) {
+        Optional<VoterModel> voterModelOptional = voterService.findByVoterCPF(cpf);
+
+        if (!voterModelOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("CPF not found.");
+        }
+
+        var voterModel = new VoterModel();
+
+        BeanUtils.copyProperties(voterUpdateDTO, voterModel);
+        voterModel.setId(voterModelOptional.get().getId());
+        voterModel.setVoterCPF(voterModelOptional.get().getVoterCPF());
+        voterModel.setRegistrationDate(voterModelOptional.get().getRegistrationDate());
+
+        return ResponseEntity.status(HttpStatus.OK).body(voterService.save(voterModel));
     }
 }
