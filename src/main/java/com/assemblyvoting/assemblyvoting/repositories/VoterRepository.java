@@ -7,4 +7,5 @@ import java.util.UUID;
 
 public interface VoterRepository extends JpaRepository<VoterModel, UUID> {
 
+    boolean existsByVoterCPF(String voterCPF);
 }
